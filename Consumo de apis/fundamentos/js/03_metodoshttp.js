@@ -1,6 +1,7 @@
     const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=10";
     const API_URL_FAVORITES = "https://api.thecatapi.com/v1/favourites?limit=20";
     const API_URL_FAVORITES_DELETE = (id) => 'https://api.thecatapi.com/v1/favourites/'+id;
+    const API_URL_UPLOAD = "https://api.thecatapi.com/v1/images/upload"
     //KEY : ""
     const KEY = "live_Ys95SkmS6fMQGTcFd5fevudHitE9djPf8YUU5riZpsPLAQ6lI2LbVu6pOZ25UxU8";
 
@@ -148,5 +149,36 @@ async function unlikearFavoritesMichis(id){
         loadLikesMichis()
     }
 }
+
+async function uploadMichiPhoto(){
+    const form = document.getElementById("uploadingForm")
+    const formData = new FormData(form);
+
+    console.log(formData.get('file'))
+
+    const res = await fetch(API_URL_UPLOAD,{
+        method: 'POST',
+        headers: {
+            //'Content-Type': 'multipart/form-data',
+            'x-api-key': KEY,
+        },
+        body: formData,
+    })
+
+    const data = await res.json();
+
+    if (res.status !== 201) {
+        spanError.innerHTML ="Hubo un error: "+res.status+"->"+data.message;
+        console.log({data})
+    } else {
+        alert("Michi subido !");
+        console.log({data});
+        console.log("Michi subido !");
+        console.log(data.url);
+        likearFavoritesMichis(data.id);
+    }
+
+}
+
 loadRandomMichis();
 loadLikesMichis()
